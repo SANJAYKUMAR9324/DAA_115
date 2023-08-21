@@ -1,0 +1,63 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+
+#define INF 999999
+
+class Graph {
+public:
+    int V;
+    std::vector<std::vector<std::pair<int, int>>> adj;
+
+    Graph(int v) : V(v) {
+        adj.resize(v);
+    }
+
+    void addEdge(int u, int v, int w) {
+        adj[u].emplace_back(v, w);
+        adj[v].emplace_back(u, w);
+    }
+
+    void dijkstra(int src) {
+        std::vector<int> dist(V, INF);
+        dist[src] = 0;
+        std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+        pq.push(std::make_pair(0, src));
+
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            pq.pop();
+
+            for (const auto& neighbor : adj[u]) {
+                int v = neighbor.first;
+                int weight = neighbor.second;
+
+                if (dist[v] > dist[u] + weight) {
+                    dist[v] = dist[u] + weight;
+                    pq.push(std::make_pair(dist[v], v));
+                }
+            }
+        }
+
+        std::cout << "Vertex\tDistance from Source\n";
+        for (int i = 0; i < V; ++i) {
+            std::cout << i << "\t" << dist[i] << "\n";
+        }
+    }
+};
+
+int main() {
+    Graph graph(5);
+
+    graph.addEdge(0, 1, 9);
+    graph.addEdge(0, 2, 6);
+    graph.addEdge(0, 3, 5);
+    graph.addEdge(0, 4, 3);
+    graph.addEdge(2, 1, 2);
+    graph.addEdge(2, 3, 4);
+
+    int source = 0;
+    graph.dijkstra(source);
+
+    return 0;
+}

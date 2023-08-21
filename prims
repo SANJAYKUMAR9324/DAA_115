@@ -1,0 +1,78 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+// Define a pair to represent the edge and its weight
+typedef pair<int, int> Edge;
+
+class Graph {
+private:
+    int numVertices;
+    vector<vector<Edge>> adjList;
+
+public:
+    Graph(int n) : numVertices(n), adjList(n) {}
+
+    void addEdge(int u, int v, int weight) {
+        adjList[u].push_back(make_pair(v, weight));
+        adjList[v].push_back(make_pair(u, weight));
+    }
+
+    int primMST() {
+        vector<bool> visited(numVertices, false);
+        int minWeight = 0;
+
+        // Priority queue to store edges with their weights, sorted by weight
+        priority_queue<Edge, vector<Edge>, greater<Edge>> pq;
+
+        // Start with the first vertex (can start with any vertex)
+        int startVertex = 0;
+        visited[startVertex] = true;
+
+        // Add all edges from the start vertex to the priority queue
+        for (const Edge& edge : adjList[startVertex])
+            pq.push(edge);
+
+        while (!pq.empty()) {
+            Edge currentEdge = pq.top();
+            pq.pop();
+            int u = currentEdge.first;
+            int weight = currentEdge.second;
+
+            if (!visited[u]) {
+                visited[u] = true;
+                minWeight += weight;
+
+                // Add all edges from the current vertex to the priority queue
+                for (const Edge& edge : adjList[u]) {
+                    int v = edge.first;
+                    if (!visited[v])
+                        pq.push(edge);
+                }
+            }
+        }
+
+        return minWeight;
+    }
+};
+
+int main() {
+    int numVertices, numEdges;
+    cout << "Enter the number of vertices and edges: ";
+    cin >> numVertices >> numEdges;
+
+    Graph graph(numVertices);
+
+    cout << "Enter edges (from_vertex to_vertex weight):\n";
+    for (int i = 0; i < numEdges; ++i) {
+        int u, v, weight;
+        cin >> u >> v >> weight;
+        graph.addEdge(u, v, weight);
+    }
+
+    int minimumWeight = graph.primMST();
+    cout << "Minimum Spanning Tree weight: " << minimumWeight << endl;
+
+    return 0;
+}

@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+
+class Graph {
+public:
+    int V;
+    std::vector<std::vector<int>> adj;
+
+    Graph(int v) : V(v) {
+        adj.resize(v);
+    }
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
+
+    void dfs(int start) {
+        std::vector<bool> visited(V, false);
+        std::stack<int> s;
+
+        s.push(start);
+
+        while (!s.empty()) {
+            int current = s.top();
+            s.pop();
+
+            if (!visited[current]) {
+                std::cout << current << " ";
+                visited[current] = true;
+            }
+
+            for (int neighbor : adj[current]) {
+                if (!visited[neighbor]) {
+                    s.push(neighbor);
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    Graph graph(7);
+
+    graph.addEdge(0, 1);
+    graph.addEdge(0, 2);
+    graph.addEdge(1, 3);
+    graph.addEdge(1, 4);
+    graph.addEdge(2, 5);
+    graph.addEdge(2, 6);
+
+    int startVertex = 0;
+    graph.dfs(startVertex);
+
+    return 0;
+}

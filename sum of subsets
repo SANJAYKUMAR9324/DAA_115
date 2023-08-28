@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void findSubsetSum(vector<int>& set, vector<int>& solution, int sum, int currentSum, int index) {
+    if (currentSum == sum) {
+        cout << "Solution: ";
+        for (int num : solution) {
+            cout << num << " ";
+        }
+        cout << endl;
+        return;
+    }
+
+    if (index == set.size() || currentSum > sum) {
+        return;
+    }
+
+    solution.push_back(set[index]);
+    findSubsetSum(set, solution, sum, currentSum + set[index], index + 1);
+    solution.pop_back();
+    findSubsetSum(set, solution, sum, currentSum, index + 1);
+}
+
+int main() {
+    vector<int> set = {1, 2, 5, 6, 8};
+    int sum = 9;
+    vector<int> solution;
+
+    findSubsetSum(set, solution, sum, 0, 0);
+
+    return 0;
+}
